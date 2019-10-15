@@ -9,6 +9,7 @@
 import UIKit
 var itemSize = CGSize(width: 250, height: 350)
  let cellSpacing = UIScreen.main.bounds.size.width * 0.09
+
 private let cellIdentifier = "RecipeCell"
 class RecipesVC: UIViewController {
 
@@ -96,8 +97,8 @@ extension RecipesVC: UICollectionViewDelegateFlowLayout {
         return CGSize(width: (screenWidth - (cellSpacing * numSpaces)) / numCells, height: screenHeight * 0.7)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: cellSpacing, left: cellSpacing, bottom: 0, right: cellSpacing)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: cellSpacing, bottom: 0, right: cellSpacing)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
