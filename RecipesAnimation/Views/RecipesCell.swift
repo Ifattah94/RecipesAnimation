@@ -37,7 +37,13 @@ class RecipesCell: UICollectionViewCell {
         return label
     }()
     
-    
+    lazy var closeButton: UIButton = {
+        let button = UIButton()
+        button.setImage(#imageLiteral(resourceName: "close"), for: .normal)
+        button.isHidden = true 
+        button.contentMode = .scaleAspectFill
+        return button
+    }()
     
     
     override init(frame: CGRect) {
@@ -45,6 +51,7 @@ class RecipesCell: UICollectionViewCell {
         configureRecipeImageViewConstraints()
         configureRecipeNameLabel()
         configureDescriptionLabelConstraints()
+        configureCloseButtonConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -82,7 +89,11 @@ class RecipesCell: UICollectionViewCell {
         NSLayoutConstraint.activate([descriptionLabel.centerXAnchor.constraint(equalTo: centerXAnchor), descriptionLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 300), descriptionLabel.topAnchor.constraint(equalTo: recipeImageView.bottomAnchor, constant: 25)])
     }
     
-    
+    private func configureCloseButtonConstraints() {
+        addSubview(closeButton)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([closeButton.trailingAnchor.constraint(equalTo: self.trailingAnchor), closeButton.widthAnchor.constraint(equalToConstant: 40), closeButton.topAnchor.constraint(equalTo: self.topAnchor), closeButton.heightAnchor.constraint(equalToConstant: 40)])
+    }
     
     
 }
