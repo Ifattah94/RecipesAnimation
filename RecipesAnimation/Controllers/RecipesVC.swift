@@ -63,7 +63,7 @@ class RecipesVC: UIViewController {
     private func configureRecipesCollectionView() {
         view.addSubview(recipesCollectionView)
         recipesCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([recipesCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor), recipesCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor), recipesCollectionView.topAnchor.constraint(equalTo: view.topAnchor), recipesCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)])
+        NSLayoutConstraint.activate([recipesCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor), recipesCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor), recipesCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor), recipesCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)])
         
     }
 
@@ -77,11 +77,15 @@ extension RecipesVC: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! RecipesCell
         let recipe = recipes[indexPath.row]
-        cell.configureCell(with: recipe)
+        cell.configureCell(with: recipe, collectionView: recipesCollectionView, index: indexPath.row)
         return cell
         
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedCell = collectionView.cellForItem(at: indexPath)! as! RecipesCell
+        selectedCell.toggle()
+    }
 
     
 }

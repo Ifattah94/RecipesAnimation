@@ -8,6 +8,19 @@
 
 import UIKit
 
+
+private enum State {
+    case expanded
+    case collapsed
+    
+    var change: State {
+        switch self {
+        case .expanded: return .collapsed
+        case .collapsed: return .expanded
+        }
+    }
+}
+
 class RecipesCell: UICollectionViewCell {
     
     lazy var recipeImageView: UIImageView = {
@@ -15,6 +28,7 @@ class RecipesCell: UICollectionViewCell {
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
         iv.alpha = 0.7
+        iv.layer.cornerRadius = self.cornerRadius
         return iv
     }()
     
@@ -32,7 +46,7 @@ class RecipesCell: UICollectionViewCell {
         label.numberOfLines = 0
         label.clipsToBounds = false
          label.contentMode = .left
-        label.isHidden = true 
+        label.alpha = 0
         label.font = UIFont(name: "System", size: 17)
         return label
     }()
@@ -40,11 +54,20 @@ class RecipesCell: UICollectionViewCell {
     lazy var closeButton: UIButton = {
         let button = UIButton()
         button.setImage(#imageLiteral(resourceName: "close"), for: .normal)
-        button.isHidden = true 
+        button.alpha = 0
         button.contentMode = .scaleAspectFill
+        button.isEnabled = true
+        button.showsTouchWhenHighlighted = true 
+        button.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
         return button
     }()
     
+    private var initialFrame: CGRect?
+    private var state: State = .collapsed
+    private let cornerRadius: CGFloat = 6
+    
+    private var collectionView: UICollectionView?
+       private var index: Int?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -52,6 +75,7 @@ class RecipesCell: UICollectionViewCell {
         configureRecipeNameLabel()
         configureDescriptionLabelConstraints()
         configureCloseButtonConstraints()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -60,11 +84,82 @@ class RecipesCell: UICollectionViewCell {
     
     
     
+    @objc func closeButtonPressed() {
+        toggle()
+    }
     
-    public func configureCell(with recipe: Recipe) {
+    
+    
+    func toggle() {
+        switch state {
+        case .expanded:
+            collapse()
+        case .collapsed:
+            expand()
+        }
+    }
+    
+    
+    private func collapse() {
+        UIView.animate(withDuration: 0.3, animations: {
+            guard let collectionView = self.collectionView, let index = self.index else { return }
+            
+            self.descriptionLabel.alpha = 0
+            self.closeButton.alpha = 0
+            
+            self.layer.cornerRadius = self.cornerRadius
+            self.frame = self.initialFrame!
+            
+            if let leftCell = collectionView.cellForItem(at: IndexPath(row: index - 1, section: 0)) {
+                leftCell.center.x += 50
+            }
+            
+            if let rightCell = collectionView.cellForItem(at: IndexPath(row: index + 1, section: 0)) {
+                rightCell.center.x -= 50
+            }
+            
+            self.layoutIfNeeded()
+        }) { (finished) in
+            self.state = self.state.change
+            self.collectionView?.isScrollEnabled = true
+            self.collectionView?.allowsSelection = true
+        }
+    }
+    
+    
+    private func expand() {
+        UIView.animate(withDuration: 0.3, animations: {
+            guard let collectionView = self.collectionView, let index = self.index else { return }
+            self.initialFrame = self.frame
+            self.descriptionLabel.alpha = 1
+            self.closeButton.alpha = 1
+            
+            self.layer.cornerRadius = 0
+            self.frame = CGRect(x: collectionView.contentOffset.x, y:0 , width: collectionView.frame.width, height: collectionView.frame.height)
+            if let leftCell = collectionView.cellForItem(at: IndexPath(row: index - 1, section: 0)) {
+                       leftCell.center.x -= 50
+                   }
+                   
+                   if let rightCell = collectionView.cellForItem(at: IndexPath(row: index + 1, section: 0)) {
+                       rightCell.center.x += 50
+                   }
+                   
+                   self.layoutIfNeeded()
+        }) { (finished) in
+            self.state = self.state.change
+            self.collectionView?.isScrollEnabled = false
+            self.collectionView?.allowsSelection = false
+        }
+        
+    
+    }
+    
+    public func configureCell(with recipe: Recipe, collectionView: UICollectionView, index: Int) {
         recipeNameLabel.text = recipe.name
         recipeImageView.image = UIImage(named: recipe.imageName)
         descriptionLabel.text = recipe.summary
+        self.collectionView = collectionView
+        self.index = index 
     }
     
     
