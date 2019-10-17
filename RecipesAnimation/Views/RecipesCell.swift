@@ -113,12 +113,27 @@ class RecipesCell: UICollectionViewCell {
                        self.frame = self.initialFrame!
                        
                        if let leftCell = collectionView.cellForItem(at: IndexPath(row: index - 1, section: 0)) {
-                           leftCell.center.x += 50
+                        //Animation left cell to fade in when view collapses
+                        UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+                             leftCell.center.x += 50
+                            leftCell.alpha = 1
+                        }, completion: nil)
+                        
+                        
+                          
+                        
                        }
                        
                        if let rightCell = collectionView.cellForItem(at: IndexPath(row: index + 1, section: 0)) {
-                           rightCell.center.x -= 50
+                        //Animate right cell to fade in when view collpases
+                        UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+                            rightCell.center.x -= 50
+                            rightCell.alpha = 1
+                        }, completion: nil)
+                           
                        }
+            
+            
                        
                        self.layoutIfNeeded()
         }) { (finished) in
@@ -143,13 +158,28 @@ class RecipesCell: UICollectionViewCell {
                        self.layer.cornerRadius = 0
                        self.frame = CGRect(x: collectionView.contentOffset.x, y:0 , width: collectionView.frame.width, height: collectionView.frame.height)
                        if let leftCell = collectionView.cellForItem(at: IndexPath(row: index - 1, section: 0)) {
-                                  leftCell.center.x -= 50
-                        leftCell.isHidden = true
+                        
+                        
+                        //Animate left cell fading out when cell expands.
+                        UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+                            leftCell.center.x -= 50
+                            leftCell.alpha = 0
+                        }, completion: nil)
+                        
+                                  
+                       
                               }
                               
                               if let rightCell = collectionView.cellForItem(at: IndexPath(row: index + 1, section: 0)) {
-                                  rightCell.center.x += 50
-                                rightCell.isHidden = true
+                                //Animate right cell fading out when cell expands
+                                UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+                                    rightCell.alpha = 0
+                                    rightCell.center.x += 50
+                                }, completion: nil)
+                                  
+                                
+                                
+                                
                               }
                               
                               self.layoutIfNeeded()
