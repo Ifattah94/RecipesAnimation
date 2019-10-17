@@ -101,26 +101,31 @@ class RecipesCell: UICollectionViewCell {
     
     
     private func collapse() {
-        UIView.animate(withDuration: 0.3, animations: {
+        
+        
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
             guard let collectionView = self.collectionView, let index = self.index else { return }
-            
-            self.descriptionLabel.alpha = 0
-            self.closeButton.alpha = 0
-            
-            self.layer.cornerRadius = self.cornerRadius
-            self.frame = self.initialFrame!
-            
-            if let leftCell = collectionView.cellForItem(at: IndexPath(row: index - 1, section: 0)) {
-                leftCell.center.x += 50
-            }
-            
-            if let rightCell = collectionView.cellForItem(at: IndexPath(row: index + 1, section: 0)) {
-                rightCell.center.x -= 50
-            }
-            
-            self.layoutIfNeeded()
+                       
+                       self.descriptionLabel.alpha = 0
+                       self.closeButton.alpha = 0
+                       
+                       self.layer.cornerRadius = self.cornerRadius
+                       self.frame = self.initialFrame!
+                       
+                       if let leftCell = collectionView.cellForItem(at: IndexPath(row: index - 1, section: 0)) {
+                           leftCell.center.x += 50
+                       }
+                       
+                       if let rightCell = collectionView.cellForItem(at: IndexPath(row: index + 1, section: 0)) {
+                           rightCell.center.x -= 50
+                       }
+                       
+                       self.layoutIfNeeded()
         }) { (finished) in
             self.state = self.state.change
+            self.collectionView?.visibleCells.forEach({ (cell) in
+                cell.isHidden = false
+            })
             self.collectionView?.isScrollEnabled = true
             self.collectionView?.allowsSelection = true
         }
@@ -128,23 +133,26 @@ class RecipesCell: UICollectionViewCell {
     
     
     private func expand() {
-        UIView.animate(withDuration: 0.3, animations: {
+        
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
             guard let collectionView = self.collectionView, let index = self.index else { return }
-            self.initialFrame = self.frame
-            self.descriptionLabel.alpha = 1
-            self.closeButton.alpha = 1
-            
-            self.layer.cornerRadius = 0
-            self.frame = CGRect(x: collectionView.contentOffset.x, y:0 , width: collectionView.frame.width, height: collectionView.frame.height)
-            if let leftCell = collectionView.cellForItem(at: IndexPath(row: index - 1, section: 0)) {
-                       leftCell.center.x -= 50
-                   }
-                   
-                   if let rightCell = collectionView.cellForItem(at: IndexPath(row: index + 1, section: 0)) {
-                       rightCell.center.x += 50
-                   }
-                   
-                   self.layoutIfNeeded()
+                       self.initialFrame = self.frame
+                       self.descriptionLabel.alpha = 1
+                       self.closeButton.alpha = 1
+                       
+                       self.layer.cornerRadius = 0
+                       self.frame = CGRect(x: collectionView.contentOffset.x, y:0 , width: collectionView.frame.width, height: collectionView.frame.height)
+                       if let leftCell = collectionView.cellForItem(at: IndexPath(row: index - 1, section: 0)) {
+                                  leftCell.center.x -= 50
+                        leftCell.isHidden = true
+                              }
+                              
+                              if let rightCell = collectionView.cellForItem(at: IndexPath(row: index + 1, section: 0)) {
+                                  rightCell.center.x += 50
+                                rightCell.isHidden = true
+                              }
+                              
+                              self.layoutIfNeeded()
         }) { (finished) in
             self.state = self.state.change
             self.collectionView?.isScrollEnabled = false
